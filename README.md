@@ -14,7 +14,10 @@ export PGPORT=
 export PGPASSWORD=
 export PGUSER=
 
+#run
 target/cloud-extra
+
+open localhost:8585
 
 
 ```

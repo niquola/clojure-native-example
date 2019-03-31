@@ -16,17 +16,6 @@
            (.password (or (System/getenv "PGPASSWORD") "postgres"))
            (.port     (Integer/parseInt (or (System/getenv "PGPORT") "5436")))))
 
-(defn build-parser [cols]
-  (let [row 'row
-        raw 'raw
-        m (reduce (fn [acc [k {i :index :as col}]]
-                    (assoc acc k (list 'decode col '(nth raw i)))) {} cols)]
-    `(fn [~row]
-       (let [^bytes ~raw (.raw ~row)]
-         ~m))))
-
-;; (build-parser {:a {:index 0} :b {:index 1}})
-
 (defn columns [^pgnio.QueryMessage$Row r]
   (->> (.columns ^pgnio.QueryMessage$RowMeta (.meta ^pgnio.QueryMessage$Row r))
        (reduce 
@@ -115,8 +104,6 @@
 
   (time
    (count (query db "select * from information_schema.tables")))
-
-  (query db "select * from \"user\" ")
 
   (def tps (query db "select oid, * from pg_catalog.pg_type "))
 
